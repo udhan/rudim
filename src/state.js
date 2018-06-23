@@ -1,12 +1,24 @@
-import {render} from './core';
+import {render, isObject} from './core';
 
 class Store {
     constructor(){
     }
 
     attachDom (component, domElement) {
-        this.__component = component;
-        this.__domElement = domElement;
+        Object.defineProperty(this, '__component', {
+            value: component,
+            writable:true,
+            enumerable:false
+        });
+
+        Object.defineProperty(this, '__domElement', {
+            value: domElement,
+            writable:true,
+            enumerable:false
+        });
+
+        // this.__component = component;
+        // this.__domElement = domElement;
     }
 
     flush () {
@@ -16,6 +28,14 @@ class Store {
 }
 
 export function rud(data) {
+    for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+            if(isObject(data[key])){
+                data[key] = rud(data[key]);
+            }
+        }
+    }
+
     let rstore = new Store();
     let rData = Object.assign(rstore, data);
 

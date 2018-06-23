@@ -2,7 +2,7 @@ function createElement(tag) {
     return document.createElement(tag.toString().slice(7, -1));
 }
 
-function isObject(obj) {
+export function isObject(obj) {
     return obj === Object(obj) && Object.prototype.toString.call(obj) !== '[object Array]';
 }
 
@@ -63,7 +63,7 @@ export function domComponent(component) {
     let tag = component[0];
     let options = {};
     let childStartIndex = 1;
-    
+
     if(isObject(component[1])){
         options = component[1];
         childStartIndex = 2;
@@ -80,7 +80,7 @@ export function domComponent(component) {
         if (Array.isArray(item)) {
             domEle.appendChild(domComponent(item));
         } else {
-            let childEle = document.createTextNode(item.toString());
+            let childEle = document.createTextNode(item);
             domEle.appendChild(childEle);
         }
     }
