@@ -5,10 +5,10 @@ A rudimentory javascript framework
 ## Introduction
 
 This is not so serious javascript framework with focus on simple API.
-I am huge fan of simplicity of reagent framework and rudim's API is similar.
+I am huge fan of simplicity of reagent framework and rudim's API is heavily inspired by it.
 
-This is not for production and implemented awefully. It also works only on
-latest browsers.
+Framework is not ready for production and may never will be. It is implemented awfully in its current state. It works only on
+latest browsers (For some definition of "works"!).
 
 ### Using rudim
 
