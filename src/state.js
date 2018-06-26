@@ -1,9 +1,6 @@
 import {render, isObject} from './core';
 
 class Store {
-    constructor(){
-    }
-
     attachDom (component, domElement) {
         Object.defineProperty(this, '__component', {
             value: component,
@@ -16,14 +13,10 @@ class Store {
             writable:true,
             enumerable:false
         });
-
-        // this.__component = component;
-        // this.__domElement = domElement;
     }
-
     flush () {
         let parent = this.__domElement.parentElement;
-        render([this.__component, this], parent, this.__domElement);
+        render([this.__component, rud(this)], parent, this.__domElement);
     };
 }
 
@@ -42,7 +35,6 @@ export function rud(data) {
     return new Proxy(rData, {
         set: function (target, key, val) {
             target[key] = val;
-            // Property updated, update view
             if (!key.startsWith('__')){
                 target.flush();
             }
