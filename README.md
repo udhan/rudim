@@ -1,6 +1,6 @@
 # rudim
 
-A rudimentory javascript framework
+A rudimentary javascript framework
 
 ## Introduction
 
