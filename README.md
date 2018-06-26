@@ -12,7 +12,7 @@ latest browsers.
 
 ### Using rudim
 
-Following is a sample counter component built using rudim
+Following is a sample counter component built using rudim. Additional examples can be found at udhan/rudim-example
 
     import { render, rud } from 'rudim';
     import { h1, h3, span, div, input } from 'rudim';
