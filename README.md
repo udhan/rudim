@@ -14,8 +14,7 @@ latest browsers (For some definition of "works"!).
 
 Following is a sample counter component built using rudim. Additional examples can be found at [udhan/rudim-example](https://github.com/udhan/rudim-example)
 
-    import { render, rud } from 'rudim';
-    import { h1, h3, span, div, input } from 'rudim';
+    import { render, rud, h1, h3, span, div, input } from 'rudim';
 
     let appState = rud({count: 0});
 
