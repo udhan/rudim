@@ -6,35 +6,45 @@ export function isObject(obj) {
     return obj === Object(obj) && Object.prototype.toString.call(obj) !== '[object Array]';
 }
 
-function componentType(component){
-    if(!Array.isArray(component) || component.length <= 0){
+function componentType(component) {
+    if (!Array.isArray(component) || component.length <= 0) {
         throw 'component must be defined as non empty array';
     }
 
     let compType = typeof component[0];
 
-    if((compType !== 'function' || component.length < 2) && 
-        compType !== 'symbol'){
-        throw `first element in component array must either be
-               a function with second item as state or a tag`;
+    switch (compType) {
+        case 'function':
+            if (component.length < 2) {
+                return 'function-ns';
+            } else {
+                return 'function';
+            }
+        case 'symbol':
+            return 'symbol';
+        default:
+            throw `component of type ${compType} is not supported`;
     }
-
-    return compType;
 }
 
-function funcComponentHandler(component){
+function funcComponentHandler(component, hasState) {
     let f = component[0];
     let state = component[1];
+    let view;
 
-    let view = f(state);
-    let dComp = domComponent(view);
+    if(hasState){
+        view = f(state);
+    }else{
+        view = f();
+    }
     
+    let dComp = domComponent(view);
     state.attachDom(f, dComp);
     
     return dComp;
 }
 
-function tagComponentHandler(tag, options){
+function tagComponentHandler(tag, options) {
     // create dom element
     let domEle = createElement(tag);
 
@@ -56,7 +66,9 @@ export function domComponent(component) {
     let compType = componentType(component);
 
     if (compType === 'function') {
-        return funcComponentHandler(component);
+        return funcComponentHandler(component, true);
+    }else if(compType === 'function-ns'){
+        return funcComponentHandler(component, false);
     }
 
     // compType is symbol
@@ -64,7 +76,7 @@ export function domComponent(component) {
     let options = {};
     let childStartIndex = 1;
 
-    if(isObject(component[1])){
+    if (isObject(component[1])) {
         options = component[1];
         childStartIndex = 2;
     }
@@ -89,9 +101,9 @@ export function domComponent(component) {
 }
 
 export function render(component, rootEle, oldEle) {
-    if(oldEle){
+    if (oldEle) {
         rootEle.replaceChild(domComponent(component), oldEle);
-    }else{
+    } else {
         rootEle.appendChild(domComponent(component));
     }
 }
