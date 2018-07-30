@@ -27,7 +27,7 @@ function componentType(component) {
     }
 }
 
-function funcComponentHandler(component, hasState) {
+function funcComponentHandler(component, hasState, reRender=false) {
     let f = component[0];
     let state = component[1];
     let view;
@@ -39,8 +39,10 @@ function funcComponentHandler(component, hasState) {
     }
     
     let dComp = domComponent(view);
-    state.attachDom(f, dComp);
-    
+
+    if(!reRender){
+        state.attachDom(f, dComp);
+    }
     return dComp;
 }
 
@@ -49,10 +51,11 @@ function tagComponentHandler(tag, options) {
     let domEle = createElement(tag);
 
     // attach options
-    // TODO: validations and more event support
     for (let attr in options) {
-        if (attr == 'onclick') {
-            domEle.addEventListener('click', options[attr]);
+        if(attr === 'e'){
+            let event = options[attr];
+            let eOptions = event.options || {};
+            domEle.addEventListener(event.type, event.listener, eOptions);
         } else {
             domEle.setAttribute(attr, options[attr]);
         }
@@ -61,14 +64,14 @@ function tagComponentHandler(tag, options) {
     return domEle;
 }
 
-export function domComponent(component) {
+export function domComponent(component, reRender=false) {
 
     let compType = componentType(component);
 
     if (compType === 'function') {
-        return funcComponentHandler(component, true);
+        return funcComponentHandler(component, true, reRender);
     }else if(compType === 'function-ns'){
-        return funcComponentHandler(component, false);
+        return funcComponentHandler(component, false, reRender);
     }
 
     // compType is symbol
@@ -100,10 +103,10 @@ export function domComponent(component) {
     return domEle;
 }
 
-export function render(component, rootEle, oldEle) {
+export function render(component, rootEle, oldEle, reRender=false) {
     if (oldEle) {
-        rootEle.replaceChild(domComponent(component), oldEle);
+        rootEle.replaceChild(domComponent(component, reRender), oldEle);
     } else {
-        rootEle.appendChild(domComponent(component));
+        rootEle.appendChild(domComponent(component, reRender));
     }
 }

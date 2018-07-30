@@ -18,23 +18,28 @@ export function rud(data) {
     });
 
     data.attachDom = function (component, domElement) {
+        console.log('Attaching dom', component);
         this.__components.push({ component: component, domElement: domElement });
     };
 
     data.flush =  function () {
-        for (let i = 0; i < this.__components.length; i++) {
-            let comp = this.__components[i].component;
-            let domEle = this.__components[i].domElement;
+        let comps = this.__components;
+        this.__components = [];
+        for (let i = 0; i < comps.length; i++) {
+            let comp = comps[i].component;
+            let domEle = comps[i].domElement;
             let parent = domEle.parentElement;
-
-            render([comp, rud(this)], parent, domEle);
+            console.log('Rendering', comp, this);
+            render([comp, rud(data)], parent, domEle, false);
         }
     };
 
     return new Proxy(data, {
         set: function (target, key, val) {
             target[key] = val;
+
             if (!key.startsWith('__')) {
+                console.log('Triggering flush for', target, key, val);
                 target.flush();
             }
 
